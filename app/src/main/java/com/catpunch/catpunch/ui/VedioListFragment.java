@@ -230,6 +230,9 @@ public class VedioListFragment extends Fragment {
         public String hash = null;
         public URL urll = null;
         public String RedirectString = null;
+        public String crlf = "\r\n";
+        public String twoHyphens = "--";
+        public String boundary = "*****";
 
 
         @Override
@@ -281,9 +284,9 @@ public class VedioListFragment extends Fragment {
                             URL url_1 = new URL(path1);
                             urll = url_1;
                             HttpURLConnection ucon = (HttpURLConnection) url_1.openConnection();
-                            ucon.addRequestProperty("Cookie", Cookies);//*
+                            ucon.addRequestProperty("Cookie", Cookies);
                             try {
-                                ucon.setRequestMethod("POST"); //
+                                ucon.setRequestMethod("POST");
                                 ucon.setReadTimeout(15000);
                                 ucon.setInstanceFollowRedirects(false);
                                 switch (ucon.getResponseCode()) {
@@ -305,9 +308,7 @@ public class VedioListFragment extends Fragment {
                                             Log.i("redirConString ==", redirCon.toString());
 //                                            BufferedReader bw = new BufferedReader(new InputStreamReader(redirCon.getInputStream()));
                                             InputStream in = new BufferedInputStream(redirCon.getInputStream());//*
-                                            String crlf = "\r\n";
-                                            String twoHyphens = "--";
-                                            String boundary = "*****";
+
                                             String path3 = " http://t3.catpunch.co/gs/" + params[0];
                                             URL url3 = new URL(path3);
                                             HttpURLConnection conn = (HttpURLConnection) url3.openConnection();
@@ -339,14 +340,6 @@ public class VedioListFragment extends Fragment {
                                                 switch (conn.getResponseCode()) {
                                                     case 200:
                                                         Log.d(TAG, "reponse: 200");
-//                                                        InputStream is1 = conn.getInputStream();
-//                                                        ByteArrayOutputStream baos1 = new ByteArrayOutputStream();
-//                                                        byte[] buffer1 = new byte[1024];
-//                                                        int len1;
-//                                                        while ((len1 = is1.read(buffer1)) != -1) {
-//                                                            baos1.write(buffer1, 0, len1);
-//
-//                                                        }
                                                         BufferedReader br = new BufferedReader(
                                                                 new InputStreamReader(conn.getInputStream()));
                                                         StringBuilder sb = new StringBuilder();
@@ -377,8 +370,6 @@ public class VedioListFragment extends Fragment {
                                                         }
                                                         intent1.putExtra("title", params[1]);
                                                         startActivity(intent1);
-//                                                        baos1.close();
-//                                                        is1.close();
                                                         break;
                                                     case 202:
                                                         String path4 = conn.getHeaderField("cptv-redirect");
@@ -392,9 +383,6 @@ public class VedioListFragment extends Fragment {
                                                             Log.i("redirCon1 ==", String.valueOf(redirCon1.getResponseCode()));
                                                             Log.i("redirConString ==", redirCon1.toString());
                                                             InputStream in1 = new BufferedInputStream(redirCon1.getInputStream());//*
-                                                            String crlf1 = "\r\n";
-                                                            String twoHyphens1 = "--";
-                                                            String boundary1 = "*****";
                                                             String path5 = " http://t3.catpunch.co/gs/" + params[0];
                                                             URL url5 = new URL(path5);
                                                             HttpURLConnection reconn = (HttpURLConnection) url5.openConnection();
@@ -403,23 +391,22 @@ public class VedioListFragment extends Fragment {
                                                                 reconn.setRequestMethod("POST");
                                                                 reconn.setReadTimeout(15000);
                                                                 reconn.setRequestProperty("Content-Type", "multipart/form-data;boundary="
-                                                                        + boundary1);
-                                                                System.out.print("test");
+                                                                        + boundary);
                                                                 reconn.setDoInput(true);
                                                                 reconn.setDoOutput(true);
                                                                 reconn.setChunkedStreamingMode(0);
                                                                 DataOutputStream reout = new DataOutputStream(reconn.getOutputStream());
                                                                 int read2;
                                                                 buf1 = new byte[4 * 1024];
-                                                                reout.writeBytes(twoHyphens1 + boundary1 + crlf1);
+                                                                reout.writeBytes(twoHyphens + boundary + crlf);
                                                                 reout.writeBytes("Content-Disposition: form-data; name=\""
-                                                                        + "file" + "\";filename=\"" + "file" + "\"" + crlf1);
-                                                                reout.writeBytes(crlf1);
+                                                                        + "file" + "\";filename=\"" + "file" + "\"" + crlf);
+                                                                reout.writeBytes(crlf);
                                                                 while ((read2 = in1.read(buf1)) != -1) {
                                                                     reout.write(buf1, 0, read2);
                                                                 }
-                                                                reout.writeBytes(crlf1);
-                                                                reout.writeBytes(twoHyphens1 + boundary1 + twoHyphens1 + crlf1);
+                                                                reout.writeBytes(crlf);
+                                                                reout.writeBytes(twoHyphens + boundary + twoHyphens + crlf);
                                                                 reout.flush();
                                                                 reout.close();
                                                                 Log.i("CONN ==", String.valueOf(reconn.getResponseCode()));
@@ -469,9 +456,6 @@ public class VedioListFragment extends Fragment {
                                                                             Log.i("redirCon1 ==", String.valueOf(redirCon2.getResponseCode()));
                                                                             Log.i("redirConString ==", redirCon2.toString());
                                                                             InputStream in2 = new BufferedInputStream(redirCon2.getInputStream());//*
-                                                                            String crlf2 = "\r\n";
-                                                                            String twoHyphens2 = "--";
-                                                                            String boundary2 = "*****";
                                                                             String path6 = " http://t3.catpunch.co/gs/" + params[0];
                                                                             URL url6 = new URL(path6);
                                                                             HttpURLConnection reconn1 = (HttpURLConnection) url6.openConnection();
@@ -480,22 +464,22 @@ public class VedioListFragment extends Fragment {
                                                                                 reconn1.setRequestMethod("POST");
                                                                                 reconn1.setReadTimeout(15000);
                                                                                 reconn1.setRequestProperty("Content-Type", "multipart/form-data;boundary="
-                                                                                        + boundary2);
+                                                                                        + boundary);
                                                                                 reconn1.setDoInput(true);
                                                                                 reconn1.setDoOutput(true);
                                                                                 reconn1.setChunkedStreamingMode(0);
                                                                                 DataOutputStream reout2 = new DataOutputStream(reconn1.getOutputStream());
                                                                                 int read3;
                                                                                 buf1 = new byte[4 * 1024];
-                                                                                reout2.writeBytes(twoHyphens2 + boundary2 + crlf2);
+                                                                                reout2.writeBytes(twoHyphens + boundary + crlf);
                                                                                 reout2.writeBytes("Content-Disposition: form-data; name=\""
-                                                                                        + "file" + "\";filename=\"" + "file" + "\"" + crlf2);
-                                                                                reout2.writeBytes(crlf2);
+                                                                                        + "file" + "\";filename=\"" + "file" + "\"" + crlf);
+                                                                                reout2.writeBytes(crlf);
                                                                                 while ((read3 = in2.read(buf1)) != -1) {
                                                                                     reout2.write(buf1, 0, read3);
                                                                                 }
-                                                                                reout2.writeBytes(crlf2);
-                                                                                reout2.writeBytes(twoHyphens2 + boundary2 + twoHyphens2 + crlf2);
+                                                                                reout2.writeBytes(crlf);
+                                                                                reout2.writeBytes(twoHyphens + boundary + twoHyphens + crlf);
                                                                                 reout2.flush();
                                                                                 reout2.close();
                                                                                 Log.i("RECONN ==", String.valueOf(reconn1.getResponseCode()));

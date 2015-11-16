@@ -31,6 +31,7 @@ import com.catpunch.catpunch.R;
 import com.catpunch.catpunch.util.LogUtils;
 import com.squareup.picasso.Picasso;
 
+import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -228,7 +229,6 @@ public class VedioListFragment extends Fragment {
         public Uri subUri = null;
         public String Cookies = null;
         public String hash = null;
-        public URL urll = null;
         public String RedirectString = null;
         public String crlf = "\r\n";
         public String twoHyphens = "--";
@@ -282,7 +282,6 @@ public class VedioListFragment extends Fragment {
                             String path1 = "http://t3.catpunch.co/gs/" + params[0];
                             Log.i("PATH1 = ", path1);
                             URL url_1 = new URL(path1);
-                            urll = url_1;
                             HttpURLConnection ucon = (HttpURLConnection) url_1.openConnection();
                             ucon.addRequestProperty("Cookie", Cookies);
                             try {
@@ -304,12 +303,11 @@ public class VedioListFragment extends Fragment {
                                             redirCon.setRequestMethod("GET");
                                             redirCon.setReadTimeout(15000);
                                             redirCon.setRequestProperty("referer", "http://localhost");
-                                            Log.i("redirCon ==", String.valueOf(redirCon.getResponseCode()));
-                                            Log.i("redirConString ==", redirCon.toString());
-//                                            BufferedReader bw = new BufferedReader(new InputStreamReader(redirCon.getInputStream()));
+                                            Log.i("redirCon == ", String.valueOf(redirCon.getResponseCode()));
+                                            Log.i("redirCon String == ", redirCon.toString());
                                             InputStream in = new BufferedInputStream(redirCon.getInputStream());//*
-
                                             String path3 = " http://t3.catpunch.co/gs/" + params[0];
+                                            Log.i("PATH3 == ",path3);
                                             URL url3 = new URL(path3);
                                             HttpURLConnection conn = (HttpURLConnection) url3.openConnection();
                                             conn.setRequestProperty("Cookie", Cookies);
@@ -321,6 +319,7 @@ public class VedioListFragment extends Fragment {
                                                 conn.setDoInput(true);
                                                 conn.setDoOutput(true);
                                                 conn.setChunkedStreamingMode(0);
+                                                // 對SERVER 寫入檔案
                                                 DataOutputStream out = new DataOutputStream(conn.getOutputStream());
                                                 int read1;
                                                 String data;
@@ -337,6 +336,7 @@ public class VedioListFragment extends Fragment {
                                                 out.flush();
                                                 out.close();
                                                 Log.i("CONN ==", String.valueOf(conn.getResponseCode()));
+                                                //reCall(conn);
                                                 switch (conn.getResponseCode()) {
                                                     case 200:
                                                         Log.d(TAG, "reponse: 200");
@@ -356,6 +356,7 @@ public class VedioListFragment extends Fragment {
                                                         track = jObj.getString("tracks");
                                                         Log.i("track = ", track);
                                                         jAryTrack = new JSONArray(track);
+                                                        //當JSON有多解析度時 取的第一個
                                                         if (jAryTrack.optBoolean(0)) {
                                                             jObjTrack = jAryTrack.getJSONObject(0);
                                                             sub = jObjTrack.getString("file");
@@ -381,9 +382,10 @@ public class VedioListFragment extends Fragment {
                                                             redirCon1.setReadTimeout(15000);
                                                             redirCon1.setRequestProperty("referer", "http://localhost");
                                                             Log.i("redirCon1 ==", String.valueOf(redirCon1.getResponseCode()));
-                                                            Log.i("redirConString ==", redirCon1.toString());
-                                                            InputStream in1 = new BufferedInputStream(redirCon1.getInputStream());//*
+                                                            Log.i("redirCon1 String ==", redirCon1.toString());
+                                                            InputStream is1 = new BufferedInputStream(redirCon1.getInputStream());//*
                                                             String path5 = " http://t3.catpunch.co/gs/" + params[0];
+                                                            Log.i("PATH5 ==",path5);
                                                             URL url5 = new URL(path5);
                                                             HttpURLConnection reconn = (HttpURLConnection) url5.openConnection();
                                                             reconn.setRequestProperty("Cookie", Cookies);
@@ -402,14 +404,14 @@ public class VedioListFragment extends Fragment {
                                                                 reout.writeBytes("Content-Disposition: form-data; name=\""
                                                                         + "file" + "\";filename=\"" + "file" + "\"" + crlf);
                                                                 reout.writeBytes(crlf);
-                                                                while ((read2 = in1.read(buf1)) != -1) {
+                                                                while ((read2 = is1.read(buf1)) != -1) {
                                                                     reout.write(buf1, 0, read2);
                                                                 }
                                                                 reout.writeBytes(crlf);
                                                                 reout.writeBytes(twoHyphens + boundary + twoHyphens + crlf);
                                                                 reout.flush();
                                                                 reout.close();
-                                                                Log.i("CONN ==", String.valueOf(reconn.getResponseCode()));
+                                                                Log.i("RECONN ==", String.valueOf(reconn.getResponseCode()));
                                                                 switch (reconn.getResponseCode()){
                                                                     case 200:
                                                                         BufferedReader rebr = new BufferedReader(
@@ -445,6 +447,7 @@ public class VedioListFragment extends Fragment {
                                                                         startActivity(intent12);
                                                                         break;
                                                                     case 202:
+                                                                        //再次對SERVER 請求
                                                                         String rePath = reconn.getHeaderField("cptv-redirect");
                                                                         RedirectString = rePath;
                                                                         URL reurl = new URL(rePath);
@@ -453,9 +456,9 @@ public class VedioListFragment extends Fragment {
                                                                             redirCon2.setRequestMethod("GET");
                                                                             redirCon2.setReadTimeout(15000);
                                                                             redirCon2.setRequestProperty("referer", "http://localhost");
-                                                                            Log.i("redirCon1 ==", String.valueOf(redirCon2.getResponseCode()));
-                                                                            Log.i("redirConString ==", redirCon2.toString());
-                                                                            InputStream in2 = new BufferedInputStream(redirCon2.getInputStream());//*
+                                                                            Log.i("redirCon2 ==", String.valueOf(redirCon2.getResponseCode()));
+                                                                            Log.i("redirCon2 String ==", redirCon2.toString());
+                                                                            InputStream is2 = new BufferedInputStream(redirCon2.getInputStream());//*
                                                                             String path6 = " http://t3.catpunch.co/gs/" + params[0];
                                                                             URL url6 = new URL(path6);
                                                                             HttpURLConnection reconn1 = (HttpURLConnection) url6.openConnection();
@@ -475,14 +478,14 @@ public class VedioListFragment extends Fragment {
                                                                                 reout2.writeBytes("Content-Disposition: form-data; name=\""
                                                                                         + "file" + "\";filename=\"" + "file" + "\"" + crlf);
                                                                                 reout2.writeBytes(crlf);
-                                                                                while ((read3 = in2.read(buf1)) != -1) {
+                                                                                while ((read3 = is2.read(buf1)) != -1) {
                                                                                     reout2.write(buf1, 0, read3);
                                                                                 }
                                                                                 reout2.writeBytes(crlf);
                                                                                 reout2.writeBytes(twoHyphens + boundary + twoHyphens + crlf);
                                                                                 reout2.flush();
                                                                                 reout2.close();
-                                                                                Log.i("RECONN ==", String.valueOf(reconn1.getResponseCode()));
+                                                                                Log.i("RECONN1 ==", String.valueOf(reconn1.getResponseCode()));
                                                                                 switch ((reconn1.getResponseCode())){
                                                                                     case 200:
                                                                                         BufferedReader rebr2 = new BufferedReader(
@@ -491,7 +494,6 @@ public class VedioListFragment extends Fragment {
                                                                                         String data3 = null;
                                                                                         while ((data3 = rebr2.readLine()) != null) {
                                                                                             sb3.append(data3);
-                                                                                            Log.i("DATA = ",sb3.toString());
                                                                                         }
                                                                                         jsonString = sb3.toString();
                                                                                         Log.i("jsonString == ", jsonString);
@@ -580,9 +582,17 @@ public class VedioListFragment extends Fragment {
             return null;
         }
 
+        protected HttpURLConnection reCall(HttpURLConnection conn){
+            HttpURLConnection redirc = conn;
+            try {
+                Log.i("TEST ===", String.valueOf(redirc.getResponseCode()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return conn;
+        }
 
-
-            @Override
+        @Override
         protected void onPostExecute(Void aVoid) {
             mProgressbar.setVisibility(View.GONE);
             super.onPostExecute(aVoid);

@@ -115,7 +115,6 @@ public class MenuFragment extends Fragment {
                         try {
                             JSONObject jObj = mMenuJsonArray.getJSONObject(position);
                             mSeries = jObj.getString("series");
-
 //                            mDesc = jObj.getString("description");
 //                            System.out.print("mdesc:" + mDesc);
 //                            mThumbnail = jObj.getString("thumbnail");
@@ -186,14 +185,6 @@ public class MenuFragment extends Fragment {
                                     sb.append(data);
                                 }
                                 String jsonString = sb.toString();
-//                                InputStream is = con.getInputStream();
-//                                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//                                byte[] buffer = new byte[10240]; //*
-//                                int len;
-//                                while ((len =is.read(buffer)) != -1) {
-//                                    baos.write(buffer, 0, len);
-//                                }
-//                                System.out.print(baos.toString());
                                 try {
                                     mMenuJsonArray = new JSONArray(jsonString);
                                 } catch (JSONException e) {
@@ -246,14 +237,6 @@ public class MenuFragment extends Fragment {
                                 }
                                 jsonString = sb.toString();
 
-//                                InputStream is = con.getInputStream();
-//                                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//                                byte[] buffer = new byte[1024];
-//                                int len;
-//                                while ((len = is.read(buffer)) != -1) {
-//                                    baos.write(buffer, 0, len);
-//                                }
-//                                jsonString = baos.toString();
                                 break;
                         }
                     } finally {
